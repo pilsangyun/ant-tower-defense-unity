@@ -1,0 +1,197 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Stage1_Full15Waves
+  m_EditorClassIdentifier: Assembly-CSharp:AntTD.Data:StageWaveData
+  stageId: stage1
+  stageName: "\uD587\uC0B4 \uC815\uC6D0"
+  waves:
+  - waveNumber: 1
+    title: "\uC815\uCC30 \uB2EC\uD33D\uC774"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 624684bbca3253547acc5c1623ae71e7, type: 2}
+      count: 8
+      interval: 1
+      delay: 0.5
+  - waveNumber: 2
+    title: "\uB2EC\uD33D\uC774 \uB300\uAD70\uB2E8"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 624684bbca3253547acc5c1623ae71e7, type: 2}
+      count: 14
+      interval: 0.8
+      delay: 0.5
+  - waveNumber: 3
+    title: "\uB2E8\uB2E8\uD55C \uBB34\uB2F9\uBC8C\uB808"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 624684bbca3253547acc5c1623ae71e7, type: 2}
+      count: 6
+      interval: 0.8
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 3
+      interval: 2
+      delay: 4
+  - waveNumber: 4
+    title: "\uADF8\uB9BC\uC790 \uAC70\uBBF8"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 4530c661664945d499af2c185f28ee7a, type: 2}
+      count: 4
+      interval: 1.8
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 624684bbca3253547acc5c1623ae71e7, type: 2}
+      count: 10
+      interval: 0.6
+      delay: 5
+  - waveNumber: 5
+    title: "\uBFD4\uC560\uBC8C\uB808 \uAE30\uC2B5"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: e387e0d04e4ec0c42802f4416e3306f2, type: 2}
+      count: 4
+      interval: 2.2
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 3
+      interval: 2
+      delay: 5
+  - waveNumber: 6
+    title: "\uC911\uAC04 \uBCF4\uC2A4: \uD48D\uB385\uC774 \uD0C0\uC774\uD0C4"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 624684bbca3253547acc5c1623ae71e7, type: 2}
+      count: 8
+      interval: 0.7
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 4e649e8b7683daf4b947313c462f23ba, type: 2}
+      count: 1
+      interval: 1
+      delay: 4
+  - waveNumber: 7
+    title: "\uAC70\uBBF8\uC640 \uBB34\uB2F9\uBC8C\uB808"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 4530c661664945d499af2c185f28ee7a, type: 2}
+      count: 6
+      interval: 1.4
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 5
+      interval: 1.8
+      delay: 5
+  - waveNumber: 8
+    title: "\uC560\uBC8C\uB808 \uD2B9\uACF5\uB300"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: e387e0d04e4ec0c42802f4416e3306f2, type: 2}
+      count: 6
+      interval: 1.8
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 4530c661664945d499af2c185f28ee7a, type: 2}
+      count: 4
+      interval: 1.2
+      delay: 6
+  - waveNumber: 9
+    title: "\uCCA0\uAC11 \uAD70\uC138"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 8
+      interval: 1.6
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: e387e0d04e4ec0c42802f4416e3306f2, type: 2}
+      count: 4
+      interval: 2
+      delay: 6
+  - waveNumber: 10
+    title: "\uC30D\uB465\uC774 \uD0C0\uC774\uD0C4"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 4530c661664945d499af2c185f28ee7a, type: 2}
+      count: 5
+      interval: 1.2
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 4e649e8b7683daf4b947313c462f23ba, type: 2}
+      count: 2
+      interval: 4
+      delay: 4
+  - waveNumber: 11
+    title: "\uB2EC\uD33D\uC774 \uD3ED\uC8FC"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 4530c661664945d499af2c185f28ee7a, type: 2}
+      count: 10
+      interval: 0.9
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 624684bbca3253547acc5c1623ae71e7, type: 2}
+      count: 20
+      interval: 0.4
+      delay: 5
+  - waveNumber: 12
+    title: "\uC57C\uAC04 \uC815\uC608 \uAC15\uC2B5"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: e387e0d04e4ec0c42802f4416e3306f2, type: 2}
+      count: 8
+      interval: 1.4
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 7
+      interval: 1.5
+      delay: 4
+  - waveNumber: 13
+    title: "\uCD1D\uB825 \uACF5\uC2B5"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 10
+      interval: 1.2
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 4530c661664945d499af2c185f28ee7a, type: 2}
+      count: 8
+      interval: 0.8
+      delay: 5
+  - waveNumber: 14
+    title: "\uD30C\uBA78\uC758 \uAD70\uB2E8"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 624684bbca3253547acc5c1623ae71e7, type: 2}
+      count: 25
+      interval: 0.35
+      delay: 0.5
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 8
+      interval: 1.2
+      delay: 4
+    - enemyData: {fileID: 11400000, guid: 4530c661664945d499af2c185f28ee7a, type: 2}
+      count: 8
+      interval: 0.9
+      delay: 7
+  - waveNumber: 15
+    title: "\uCD5C\uC885 \uBCF4\uC2A4: \uC0AC\uB9C8\uADC0 \uD0C0\uC774\uD0C4"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 4e649e8b7683daf4b947313c462f23ba, type: 2}
+      count: 1
+      interval: 1
+      delay: 1
+    - enemyData: {fileID: 11400000, guid: 8e88db265d4a1c84896293275de60712, type: 2}
+      count: 1
+      interval: 1
+      delay: 6
+    - enemyData: {fileID: 11400000, guid: 11c73724c3b4ac94a894f60dba35fb6e, type: 2}
+      count: 8
+      interval: 1.2
+      delay: 10

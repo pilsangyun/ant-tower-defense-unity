@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54603f7beabd68243bffbbd5c1ad489f, type: 3}
+  m_Name: TowerData_worker
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.TowerData
+  towerId: worker
+  antName: "\uC77C\uAC1C\uBBF8"
+  role: 0
+  baseCost: 50
+  upgradeCost: 60
+  baseRange: 1.2
+  baseDamage: 0
+  baseAttackSpeed: 1
+  baseBlockCount: 0
+  cooldownTime: 0
+  respawnTime: 0
+  icon: {fileID: 21300000, guid: bc4b288dc8212e640a50686234cf145b, type: 3}
+  description: 
+  branchA:
+    branchKey: 
+    id: 
+    name: "\uAC00\uC704\uAC1C\uBBF8"
+    title: "\uBC84\uC12F \uB18D\uC7A5\uC8FC"
+    sugarCost: 180
+    proteinCost: 2
+    damage: 0
+    range: 0
+    attackSpeed: 0
+    blockCount: 0
+    evolvedSprite: {fileID: 21300000, guid: bc4b288dc8212e640a50686234cf145b, type: 3}
+    description: "\uBC84\uC12F \uADE0\uC0AC\uCCB4 \uB18D\uC7A5\uC744 \uAC00\uAFB8\uC5B4 \uB2F9\uBD84 \uC0DD\uC0B0\uB7C9\uC774 2\uBC30\uB85C \uC99D\uAC00\uD558\uACE0 \uC8FC\uAE30\uC801\uC73C\uB85C \uB2E8\uBC31\uC9C8\uC744 \uC0DD\uC0B0\uD569\uB2C8\uB2E4."
+  branchB:
+    branchKey: 
+    id: 
+    name: "\uAFC0\uB2E8\uC9C0\uAC1C\uBBF8"
+    title: "\uC0B4\uC544\uC788\uB294 \uBCF4\uAE09\uC18C"
+    sugarCost: 180
+    proteinCost: 2
+    damage: 0
+    range: 0
+    attackSpeed: 0
+    blockCount: 0
+    evolvedSprite: {fileID: 21300000, guid: f2b52254b70666740b5a7a6f685056d0, type: 3}
+    description: "\uAC70\uB300\uD55C \uAFC0\uC8FC\uBA38\uB2C8\uC5D0\uC11C \uAFC0\uC744 \uBCF4\uAE09\uD558\uC5EC \uC0AC\uAC70\uB9AC \uB0B4 \uBAA8\uB4E0 \uC544\uAD70 \uD0C0\uC6CC\uC758 \uC0AC\uAC70\uB9AC\uC640 \uACF5\uC18D\uC744 \uB300\uD3ED \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."

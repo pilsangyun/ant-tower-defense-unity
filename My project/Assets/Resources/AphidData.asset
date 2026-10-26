@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 399f6ca1886c8a3449679377dd7ce177, type: 3}
+  m_Name: AphidData
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.EnemyData
+  enemyId: aphid
+  enemyName: "\uC232\uC18D \uB2EC\uD33D\uC774"
+  baseHp: 45
+  baseSpeed: 0.85
+  baseArmor: 0
+  sugarReward: 12
+  proteinReward: 0
+  dnaReward: 0
+  radius: 0.25
+  tintColor: {r: 1, g: 1, b: 1, a: 1}
+  isBoss: 0
+  isBonus: 0
+  webCooldown: 7
+  webRange: 2.5
+  webDuration: 2.2
+  burrowEndProgress: 0.25

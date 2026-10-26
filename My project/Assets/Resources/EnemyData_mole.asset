@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 399f6ca1886c8a3449679377dd7ce177, type: 3}
+  m_Name: EnemyData_mole
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.EnemyData
+  enemyId: mole
+  enemyName: "\uBFD4\uC560\uBC8C\uB808"
+  baseHp: 130
+  baseSpeed: 0.75
+  baseArmor: 0.1
+  sugarReward: 25
+  proteinReward: 0
+  dnaReward: 0
+  radius: 0.35
+  sprite: {fileID: 21300000, guid: d46c5244ce520e7479e4c8f75c449170, type: 3}
+  tintColor: {r: 1, g: 1, b: 1, a: 1}
+  isBoss: 0
+  isBonus: 0
+  webCooldown: 7
+  webRange: 2.5
+  webDuration: 2.2
+  burrowEndProgress: 0.25

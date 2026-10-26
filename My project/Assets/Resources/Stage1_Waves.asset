@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Stage1_Waves
+  m_EditorClassIdentifier: Assembly-CSharp:AntTD.Data:StageWaveData
+  stageId: sunny
+  stageName: "\uD587\uC0B4 \uC815\uC6D0"
+  waves:
+  - waveNumber: 1
+    title: "\uC9C4\uB527\uBB3C \uC815\uCC30"
+    description: 
+    spawns:
+    - enemyData: {fileID: 11400000, guid: 6464fb48a4d29f441bede7d4a2923292, type: 2}
+      count: 10
+      interval: 1
+      delay: 0.5
