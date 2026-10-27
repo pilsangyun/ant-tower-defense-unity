@@ -12,13 +12,13 @@ using UnityEditor.SceneManagement;
 
 namespace AntTD.EditorScripts
 {
-    [InitializeOnLoad]
+    // [InitializeOnLoad] // 자동 실행 비활성화: 에디터 실행/컴파일 시 씬 강제 리셋 방지
     public static class FullPortingAutomator
     {
-        static FullPortingAutomator()
-        {
-            EditorApplication.delayCall += ExecuteFullPorting;
-        }
+        // static FullPortingAutomator()
+        // {
+        //     EditorApplication.delayCall += ExecuteFullPorting;
+        // }
 
         [MenuItem("AntTD/▶ FULL PORTING (100% COMPLETE EVERYTHING)")]
         public static void Run()
