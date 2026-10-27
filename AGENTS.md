@@ -1,0 +1,71 @@
+# Ant Tower Defense Unity - 개발 및 포팅 가이드 (AGENTS.md)
+
+이 문서는 HTML5 Canvas 웹 기반 게임(`ant-tower-defense`)을 Unity 엔진으로 포팅하는 과정에서 프로젝트의 현황, 주의사항, 테스트 절차를 한눈에 파악하기 위해 작성되었습니다.
+
+---
+
+## 1. 프로젝트 개요 & 현황
+* **원본 프로젝트**: `ant-tower-defense` (HTML5 Canvas 2D + DOM UI)
+* **포팅 프로젝트**: `ant-tower-defense-unity` (Unity 6 C# / 2D URP)
+* **프로젝트 폴더**: `./My project`
+* **메인 씬**: `Assets/Scenes/SampleScene.unity`
+
+---
+
+## 2. 주의사항 (필독 ⚠️)
+* **씬 자동 리셋 방지 조치 완료**:
+  - `Assets/Scripts/Editor/FullPortingAutomator.cs`의 `[InitializeOnLoad]` 자동 실행이 비활성화되어 있습니다.
+  - 에디터가 열리거나 스크립트를 컴파일할 때 씬이 멋대로 리셋되지 않습니다.
+  - 상단 메뉴 `AntTD > ▶ FULL PORTING`은 씬 전체를 코드로 다시 조립하는 파괴적 명령이므로, 씬을 수동으로 편집한 뒤에는 함부로 누르지 마세요.
+* **해상도 고정 필수**:
+  - 원본 웹 게임이 **540 x 860 (약 9:16 세로형)** 픽셀 기반으로 설계되었습니다.
+  - Unity Game 뷰 해상도가 다르면 슬롯 터치 판정 및 UI 앵커가 어긋나 보일 수 있습니다.
+
+---
+
+## 3. 집에서 프로젝트 열었을 때 바로 실행하는 절차 (Step-by-Step)
+
+### Step 1. Unity Hub에서 프로젝트 열기
+1. Unity Hub 실행 후 **[Add project from disk]** 클릭
+2. 저장소 내의 **`My project`** 폴더를 선택하여 추가
+3. 권장 에디터 버전: **Unity 6 (6000.x)** 또는 **Unity 2022.3 LTS 이상**
+
+### Step 2. Game 뷰 해상도 맞추기
+1. Unity 상단 **Game** 탭 클릭
+2. 상단 해상도 드롭다운(기본 `Free Aspect`) 클릭 $\rightarrow$ **`+` (새 해상도 추가)**
+   * Type: **Fixed Resolution**
+   * Width: **540** / Height: **860**
+3. `540x860` 해상도로 고정
+
+### Step 3. 메인 씬 열기
+* 프로젝트 창에서 `Assets/Scenes/SampleScene.unity` 더블 클릭하여 오픈
+
+### Step 4. 실행 및 콘솔 창 확인
+1. 상단 중앙 **▶ (Play)** 버튼 클릭
+2. 하단 **Console** 창에 빨간색 에러(`NullReferenceException`, 컴파일 에러 등)가 발생하는지 확인
+
+---
+
+## 4. 우선 검증해야 할 코어 게임 루프 (우선순위 순)
+
+1. **타워 배치**:
+   * 하단 독(Dock)의 개미 카드(불개미 등) 클릭 후 필드의 흙무더기 슬롯(`TowerSlot`)을 클릭했을 때 정상 배치되는가?
+   * 자원(설탕/Sugar)이 정상 차감되는가?
+2. **웨이브 시작 & 적 경로 이동**:
+   * 상단 `웨이브 시작 [N]` 버튼 클릭 시 적(정찰 달팽이 등)이 스폰되어 정해진 웨이포인트를 따라 이동하는가?
+3. **타워 공격 & 피격**:
+   * 사거리 내에 들어온 적을 타워가 조준하고 투사체(`Projectile_Base` 등)를 발사하는가?
+   * 적 체력바가 깎이고 사망 시 설탕 보상이 들어오는가?
+4. **여왕개미 피격 및 체력**:
+   * 적이 경로 끝에 도달했을 때 여왕개미 HP가 차감되는가?
+
+---
+
+## 5. 알려진 이슈 및 향후 개선 작업 과제
+
+* **UI 레이캐스트 가림 현상**:
+  - `AppShellContent`나 전체 화면 투명 패널에 `Image.raycastTarget = true`가 켜져 있으면 필드의 콜라이더 클릭이 씹힐 수 있습니다. 클릭이 필요한 버튼/슬롯에만 Raycast를 켜주세요.
+* **런타임 미니 HP바 가비지 생성 (`Enemy.cs`)**:
+  - 몬스터 소환 시 `new Texture2D(1, 1)`를 런타임 생성하고 있어 GC 부하가 있습니다. 1x1 픽셀 스프라이트 에셋으로 대체 권장.
+* **서브시스템 순차 이식**:
+  - 코어 루프 안정화 후 $\rightarrow$ 날씨 시스템, 여왕개미 스킬 3종, 군집 연구소(DNA 테크트리)를 단계별로 연동.
