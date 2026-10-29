@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31617c90d8ef74b08bba8dd9d1656607, type: 3}
+  m_Name: Difficulty_Normal
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.DifficultyData
+  diffType: 1
+  diffId: normal
+  displayName: "\uBCD1\uC815 (\uBCF4\uD1B5)"
+  description: "\uD45C\uC900 \uBC38\uB7F0\uC2A4\uC758 \uC815\uADDC \uC804\uC7A5. \uC801\uC808\uD55C \uC804\uC220\uC801 \uBC30\uCE58\uAC00 \uC694\uAD6C\uB429\uB2C8\uB2E4."
+  hpMultiplier: 1
+  speedMultiplier: 1
+  countMultiplier: 1.1
+  rewardMultiplier: 1.2
+  bossArmorBonus: 0
+  startSugar: 160
+  startQueenHp: 20
+  waveCountdownSeconds: 10
+  sellRefundRate: 0.7
+  bonusDnaReward: 5

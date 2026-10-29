@@ -10,16 +10,21 @@ namespace AntTD.Managers
     {
         public static GameManager Instance { get; private set; }
 
-        [Header("Stage Configuration")]
+        [Header("Stage & Difficulty Configuration")]
         public StageWaveData currentStageData;
+        public StageConfigData currentStageConfig;
+        public DifficultyData currentDifficulty;
         public List<Vector2> waypoints = new List<Vector2>();
 
         [Header("Economy & Queen")]
         public int sugar = 160;
         public int protein = 0;
+        public int dnaRewardAccumulated = 0;
         public int queenHp = 20;
         public int maxQueenHp = 20;
         public int totalKills = 0;
+
+        public float sellRefundRate => currentDifficulty != null ? currentDifficulty.sellRefundRate : 0.75f;
 
         public event Action OnResourcesChanged;
         public event Action<int> OnQueenHpChanged;
@@ -77,10 +82,56 @@ namespace AntTD.Managers
             }
         }
 
+        public void ApplyDifficultyAndStage(DifficultyData diff, StageConfigData stage)
+        {
+            currentDifficulty = diff ?? DifficultyData.CreateDefault(DifficultyType.Normal);
+            currentStageConfig = stage;
+
+            int bonusSugar = (TechLabManager.Instance != null) ? TechLabManager.Instance.startSugarBonus : 0;
+            int bonusQueenHp = (TechLabManager.Instance != null) ? TechLabManager.Instance.queenMaxHpBonus : 0;
+
+            sugar = currentDifficulty.startSugar + bonusSugar;
+            protein = 0;
+            dnaRewardAccumulated = 0;
+            maxQueenHp = currentDifficulty.startQueenHp + bonusQueenHp;
+            queenHp = maxQueenHp;
+            totalKills = 0;
+
+            if (currentStageConfig != null)
+            {
+                waypoints = currentStageConfig.GetWorldWaypoints();
+            }
+
+            OnResourcesChanged?.Invoke();
+            OnQueenHpChanged?.Invoke(queenHp);
+        }
+
+        public void AddDna(int amount)
+        {
+            dnaRewardAccumulated += amount;
+            int total = PlayerPrefs.GetInt("ANT_COLONY_DNA", 0) + amount;
+            PlayerPrefs.SetInt("ANT_COLONY_DNA", total);
+            PlayerPrefs.Save();
+            OnResourcesChanged?.Invoke();
+        }
+
+        public void TriggerVictory()
+        {
+            if (currentDifficulty != null)
+            {
+                AddDna(currentDifficulty.bonusDnaReward);
+            }
+            OnVictory?.Invoke();
+        }
+
         public void RegisterKill(Enemy enemy)
         {
             totalKills++;
-            AddSugar(enemy.data.sugarReward);
+            float rewardMul = currentDifficulty != null ? currentDifficulty.rewardMultiplier : 1.0f;
+            float labRate = (TechLabManager.Instance != null) ? TechLabManager.Instance.sugarBonusRate : 1.0f;
+            int sugarGain = Mathf.RoundToInt(enemy.data.sugarReward * rewardMul * labRate);
+            AddSugar(sugarGain);
+
             if (enemy.data.proteinReward > 0)
             {
                 AddProtein(enemy.data.proteinReward);

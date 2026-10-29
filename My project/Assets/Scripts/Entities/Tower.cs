@@ -5,13 +5,24 @@ using AntTD.Managers;
 
 namespace AntTD.Entities
 {
+    public enum TargetingPriority
+    {
+        First,      // 선두 (경로 진행도 가장 높은 적)
+        Strongest,  // 최강 (체력 가장 높은 적)
+        Weakest,    // 최약 (체력 가장 낮은 적)
+        Boss        // 보스 우선
+    }
+
     public class Tower : MonoBehaviour
     {
         public TowerData data;
+        public TowerSlot currentSlot;
         public int level = 1;
         public string branch = null; // "A" or "B"
         public int overclockLevel = 0;
         public float webDuration = 0f;
+        public int totalSugarSpent = 0;
+        public TargetingPriority priority = TargetingPriority.First;
 
         [Header("Runtime Stats")]
         public float currentRange;
@@ -33,7 +44,7 @@ namespace AntTD.Entities
             level = 1;
             branch = null;
             overclockLevel = 0;
-            webDuration = 0f;
+            totalSugarSpent = data.baseCost;
 
             currentRange = data.baseRange;
             currentDamage = data.baseDamage;
@@ -92,33 +103,103 @@ namespace AntTD.Entities
         private GameObject levelBadgeObj;
         private GameObject evolutionAuraObj;
 
+        public void CycleTargetingPriority()
+        {
+            switch (priority)
+            {
+                case TargetingPriority.First: priority = TargetingPriority.Strongest; break;
+                case TargetingPriority.Strongest: priority = TargetingPriority.Weakest; break;
+                case TargetingPriority.Weakest: priority = TargetingPriority.Boss; break;
+                case TargetingPriority.Boss: priority = TargetingPriority.First; break;
+            }
+        }
+
+        public string GetPriorityLabel()
+        {
+            switch (priority)
+            {
+                case TargetingPriority.First: return "🎯 선두 우선";
+                case TargetingPriority.Strongest: return "💪 체력 최강";
+                case TargetingPriority.Weakest: return "🩸 체력 최약";
+                case TargetingPriority.Boss: return "👑 보스 우선";
+                default: return "선두";
+            }
+        }
+
         private void AttackTarget()
         {
             Enemy target = null;
-            float maxProgress = -1f;
 
             if (WaveManager.Instance != null && WaveManager.Instance.activeEnemies != null)
             {
                 var enemies = WaveManager.Instance.activeEnemies;
+                float bestVal = -1f;
+
+                float effectiveRange = currentRange * ((WeatherManager.Instance != null) ? WeatherManager.Instance.GetRangeModifier() : 1.0f);
                 for (int i = 0; i < enemies.Count; i++)
                 {
                     var enemy = enemies[i];
                     if (enemy == null || enemy.isDead || enemy.isBurrowed) continue;
                     float dist = Vector2.Distance(transform.position, enemy.transform.position);
-                    if (dist <= currentRange)
+                    if (dist > effectiveRange) continue;
+
+                    switch (priority)
                     {
-                        if (enemy.pathProgress > maxProgress)
-                        {
-                            maxProgress = enemy.pathProgress;
-                            target = enemy;
-                        }
+                        case TargetingPriority.First:
+                            if (enemy.pathProgress > bestVal)
+                            {
+                                bestVal = enemy.pathProgress;
+                                target = enemy;
+                            }
+                            break;
+
+                        case TargetingPriority.Strongest:
+                            if (enemy.currentHp > bestVal)
+                            {
+                                bestVal = enemy.currentHp;
+                                target = enemy;
+                            }
+                            break;
+
+                        case TargetingPriority.Weakest:
+                            if (target == null || enemy.currentHp < bestVal)
+                            {
+                                bestVal = enemy.currentHp;
+                                target = enemy;
+                            }
+                            break;
+
+                        case TargetingPriority.Boss:
+                            bool isBoss = (enemy.data != null && enemy.data.isBoss);
+                            float score = (isBoss ? 10000f : 0f) + enemy.pathProgress;
+                            if (score > bestVal)
+                            {
+                                bestVal = score;
+                                target = enemy;
+                            }
+                            break;
                     }
                 }
             }
 
             if (target != null)
             {
-                attackTimer = (currentAttackSpeed > 0f) ? (1f / currentAttackSpeed) : 1f;
+                float spd = currentAttackSpeed;
+                if (QueenSkillManager.Instance != null && QueenSkillManager.Instance.swarmBuffDuration > 0f)
+                {
+                    spd *= 1.4f; // Swarm Call +40% Attack Speed
+                }
+                attackTimer = (spd > 0f) ? (1f / spd) : 1f;
+
+                float finalDmg = currentDamage;
+                if (QueenSkillManager.Instance != null)
+                {
+                    finalDmg *= QueenSkillManager.Instance.currentGlobalDamageBonus;
+                }
+                if (data.role == AntRole.RangedCorrosion && WeatherManager.Instance != null)
+                {
+                    finalDmg *= WeatherManager.Instance.GetAcidDamageModifier();
+                }
 
                 // Face target (flip X)
                 if (Mathf.Abs(target.transform.position.x - transform.position.x) > 0.05f)
@@ -137,12 +218,12 @@ namespace AntTD.Entities
                         float splash = (data.role == AntRole.RangedCorrosion) ? (branch == "A" ? 1.2f : 0.8f) : 0f;
                         float corr = (data.role == AntRole.RangedCorrosion) ? (branch == "A" ? 0.45f : 0.25f) : 0f;
                         if (branch == "A" && data.towerId == "fire") dmgType = "toxic_fire";
-                        proj.Seek(target, currentDamage, dmgType, splash, corr);
+                        proj.Seek(target, finalDmg, dmgType, splash, corr);
                     }
                 }
                 else
                 {
-                    target.TakeDamage(currentDamage, (data.role == AntRole.RangedCorrosion) ? "acid" : "physical", false);
+                    target.TakeDamage(finalDmg, (data.role == AntRole.RangedCorrosion) ? "acid" : "physical", false);
                 }
             }
         }
@@ -254,6 +335,7 @@ namespace AntTD.Entities
         {
             if (level != 1) return;
             level = 2;
+            totalSugarSpent += data.upgradeCost;
             currentDamage *= 1.5f;
             currentRange *= 1.15f;
             transform.localScale = new Vector3(0.66f, 0.66f, 1f);
@@ -267,6 +349,7 @@ namespace AntTD.Entities
             var evo = (branchKey == "A") ? data.branchA : data.branchB;
             if (evo != null)
             {
+                totalSugarSpent += evo.sugarCost;
                 if (evo.damage > 0) currentDamage = evo.damage;
                 if (evo.range > 0) currentRange = evo.range;
                 if (evo.attackSpeed > 0) currentAttackSpeed = evo.attackSpeed;
@@ -284,12 +367,38 @@ namespace AntTD.Entities
 
         public void ApplyOverclock()
         {
+            int costS = 150 + overclockLevel * 80;
+            totalSugarSpent += costS;
             overclockLevel++;
             currentDamage *= 1.18f;
             currentAttackSpeed *= 1.06f;
             currentRange *= 1.03f;
             transform.localScale = new Vector3(0.74f + overclockLevel * 0.02f, 0.74f + overclockLevel * 0.02f, 1f);
             CreateEvolutionAura(new Color(0.9f, 0.2f, 0.9f, 0.65f), 0.9f + overclockLevel * 0.05f);
+        }
+
+        public int CalculateRefundSugar()
+        {
+            float rate = GameManager.Instance != null ? GameManager.Instance.sellRefundRate : 0.75f;
+            return Mathf.Max(10, Mathf.RoundToInt(totalSugarSpent * rate));
+        }
+
+        public void DemolishAndRefund()
+        {
+            int refund = CalculateRefundSugar();
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.AddSugar(refund);
+            }
+
+            if (currentSlot != null)
+            {
+                currentSlot.ClearTower();
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
         private void CreateEvolutionAura(Color auraColor, float scale)
@@ -331,7 +440,7 @@ namespace AntTD.Entities
 
         public void RemoveWeb()
         {
-            webDuration = 0f;
+            totalSugarSpent = data.baseCost;
         }
     }
 }

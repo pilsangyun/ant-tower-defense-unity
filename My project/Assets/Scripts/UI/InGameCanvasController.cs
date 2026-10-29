@@ -32,6 +32,10 @@ namespace AntTD.UI
         public Text sheetUpgradeBtnText;
         public Button sheetOverclockBtn;
         public Text sheetOverclockBtnText;
+        public Button sheetSellBtn;
+        public Text sheetSellBtnText;
+        public Button sheetPriorityBtn;
+        public Text sheetPriorityBtnText;
         public Button sheetCloseBtn;
 
         [Header("Evolution Modal Elements")]
@@ -72,6 +76,12 @@ namespace AntTD.UI
             }
 
             if (bottomSheetPanel != null) bottomSheetPanel.SetActive(false);
+
+            if (WeatherManager.Instance != null && weatherText != null)
+            {
+                WeatherManager.Instance.hudWeatherText = weatherText;
+                WeatherManager.Instance.SetWeather(WeatherManager.Instance.currentWeather);
+            }
 
             UpdateHUD();
         }
@@ -150,6 +160,12 @@ namespace AntTD.UI
             if (tower == null)
             {
                 if (bottomSheetPanel != null) bottomSheetPanel.SetActive(false);
+
+            if (WeatherManager.Instance != null && weatherText != null)
+            {
+                WeatherManager.Instance.hudWeatherText = weatherText;
+                WeatherManager.Instance.SetWeather(WeatherManager.Instance.currentWeather);
+            }
                 return;
             }
 
@@ -159,8 +175,30 @@ namespace AntTD.UI
             sheetTitleText.text = $"{tower.data.antName} (Lv.{tower.level} {(tower.branch ?? "")} +{tower.overclockLevel})";
             sheetStatsText.text = $"공격력: {Mathf.Round(tower.currentDamage)}  |  공속: {tower.currentAttackSpeed:F1}  |  사거리: {tower.currentRange:F1}";
 
-            sheetUpgradeBtn.gameObject.SetActive(tower.level == 1 || tower.level == 2);
-            sheetOverclockBtn.gameObject.SetActive(tower.level == 3);
+            if (sheetPriorityBtn != null)
+            {
+                sheetPriorityBtn.gameObject.SetActive(true);
+                if (sheetPriorityBtnText != null) sheetPriorityBtnText.text = tower.GetPriorityLabel();
+                sheetPriorityBtn.onClick.RemoveAllListeners();
+                sheetPriorityBtn.onClick.AddListener(() =>
+                {
+                    tower.CycleTargetingPriority();
+                    if (sheetPriorityBtnText != null) sheetPriorityBtnText.text = tower.GetPriorityLabel();
+                });
+            }
+
+            if (sheetSellBtn != null)
+            {
+                sheetSellBtn.gameObject.SetActive(true);
+                int refund = tower.CalculateRefundSugar();
+                if (sheetSellBtnText != null) sheetSellBtnText.text = $"철거 (🍬 {refund} 환급)";
+                sheetSellBtn.onClick.RemoveAllListeners();
+                sheetSellBtn.onClick.AddListener(() =>
+                {
+                    tower.DemolishAndRefund();
+                    CloseBottomSheet();
+                });
+            }
 
             if (tower.level == 1)
             {
@@ -271,6 +309,12 @@ namespace AntTD.UI
         public void CloseBottomSheet()
         {
             if (bottomSheetPanel != null) bottomSheetPanel.SetActive(false);
+
+            if (WeatherManager.Instance != null && weatherText != null)
+            {
+                WeatherManager.Instance.hudWeatherText = weatherText;
+                WeatherManager.Instance.SetWeather(WeatherManager.Instance.currentWeather);
+            }
             if (PlacementManager.Instance != null)
             {
                 PlacementManager.Instance.CloseInspectorSilently();

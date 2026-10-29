@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2865489206071574841
+--- !u!1 &8476014793980816529
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6734636721169652819}
-  - component: {fileID: 1532863534114627035}
-  - component: {fileID: 2626915646397088197}
+  - component: {fileID: 4265117770041355477}
+  - component: {fileID: 6594035061759656502}
+  - component: {fileID: 745822956595807325}
   m_Layer: 0
   m_Name: Tower_Base
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6734636721169652819
+--- !u!4 &4265117770041355477
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2865489206071574841}
+  m_GameObject: {fileID: 8476014793980816529}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,14 +33,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1532863534114627035
+--- !u!212 &6594035061759656502
 SpriteRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2865489206071574841}
+  m_GameObject: {fileID: 8476014793980816529}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -93,25 +93,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
---- !u!114 &2626915646397088197
+--- !u!114 &745822956595807325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2865489206071574841}
+  m_GameObject: {fileID: 8476014793980816529}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15aa7cb7ced796f4b82e35256a2f0589, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AntTD.Entities.Tower
   data: {fileID: 0}
+  currentSlot: {fileID: 0}
   level: 1
   branch: 
   overclockLevel: 0
   webDuration: 0
+  totalSugarSpent: 0
+  priority: 0
   currentRange: 0
   currentDamage: 0
   currentAttackSpeed: 0
   maxBlockCount: 0
-  projectilePrefab: {fileID: 6042959436254513257, guid: 90ea06f4547fb6f40be2339703e02b7c, type: 3}
+  projectilePrefab: {fileID: 4456853164796474599, guid: 90ea06f4547fb6f40be2339703e02b7c, type: 3}

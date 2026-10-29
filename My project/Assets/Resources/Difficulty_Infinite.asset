@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31617c90d8ef74b08bba8dd9d1656607, type: 3}
+  m_Name: Difficulty_Infinite
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.DifficultyData
+  diffType: 4
+  diffId: infinite
+  displayName: "\uB300\uC7AC\uC559 (\uBB34\uD55C \uC6E8\uC774\uBE0C)"
+  description: "\uB05D\uC5C6\uB294 \uC801\uB4E4\uC758 \uB300\uCE68\uACF5. \uC6E8\uC774\uBE0C\uB9C8\uB2E4 \uC801 \uC2A4\uD0EF\uC774 1.25\uBC30\uC529 \uC9C0\uC218 \uC2A4\uCF00\uC77C\uB9C1\uB429\uB2C8\uB2E4."
+  hpMultiplier: 1
+  speedMultiplier: 1
+  countMultiplier: 1.2
+  rewardMultiplier: 1.5
+  bossArmorBonus: 0.2
+  startSugar: 200
+  startQueenHp: 10
+  waveCountdownSeconds: 8
+  sellRefundRate: 0.7
+  bonusDnaReward: 20

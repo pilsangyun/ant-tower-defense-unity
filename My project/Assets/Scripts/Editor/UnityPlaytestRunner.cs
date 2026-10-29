@@ -1,38 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using UnityEngine.UI;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using AntTD.Data;
-using AntTD.Entities;
+using UnityEngine;
 using AntTD.Managers;
 using AntTD.UI;
-using AntTD.EditorScripts;
+using AntTD.Entities;
+using AntTD.Data;
+using UnityEditor.SceneManagement;
 
 namespace AntTD.EditorScripts
 {
     public static class UnityPlaytestRunner
     {
-        private const string OutputDir = "c:/Users/82103/Desktop/workspace/unity_inspection";
+        private static readonly string OutputDir = Path.Combine(Directory.GetCurrentDirectory(), "unity_inspection");
 
-        [MenuItem("AntTD/Run Full Inspection Playtest")]
-        public static void Run()
+        [MenuItem("AntTD/Run Full Verification Test")]
+        public static void RunVerification()
         {
-            Debug.Log("=================================================");
-            Debug.Log("▶ STARTING UNITY ENHANCED PLAYTEST INSPECTION");
-            Debug.Log("=================================================");
-
             if (!Directory.Exists(OutputDir))
             {
                 Directory.CreateDirectory(OutputDir);
             }
 
-            // 1. Rebuild scene with latest sprites and UI
-            FullPortingAutomator.Run();
+            Debug.Log("=================================================");
+            Debug.Log("🐜 RUNNING FULL VERIFICATION & SCREENSHOT TEST SUITE");
+            Debug.Log("=================================================");
 
-            var scene = EditorSceneManager.OpenScene("Assets/Scenes/SampleScene.unity");
+            var scene = EditorSceneManager.OpenScene("Assets/Scenes/SampleScene.unity", OpenSceneMode.Single);
 
             Camera cam = Camera.main;
             if (cam == null)
@@ -41,20 +34,28 @@ namespace AntTD.EditorScripts
                 return;
             }
 
-            GameManager gm = Object.FindAnyObjectByType<GameManager>();
-            PlacementManager pm = Object.FindAnyObjectByType<PlacementManager>();
-            WaveManager wm = Object.FindAnyObjectByType<WaveManager>();
-            InGameCanvasController canvasCtrl = Object.FindAnyObjectByType<InGameCanvasController>();
+            var gm = Object.FindAnyObjectByType<GameManager>();
+            var wm = Object.FindAnyObjectByType<WaveManager>();
+            var pm = Object.FindAnyObjectByType<PlacementManager>();
+            var stageMgr = Object.FindAnyObjectByType<StageManager>();
+            var weatherMgr = Object.FindAnyObjectByType<WeatherManager>();
+            var canvasCtrl = Object.FindAnyObjectByType<InGameCanvasController>();
+            var lobbyMgr = Object.FindAnyObjectByType<LobbyManager>();
 
-            // Ensure Singleton instances are bound in Editor simulation
-            var gmAwake = typeof(GameManager).GetMethod("Awake", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (gmAwake != null) gmAwake.Invoke(gm, null);
+            // Initialize managers
+            if (gm != null)
+            {
+                var gmAwake = typeof(GameManager).GetMethod("Awake", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (gmAwake != null) gmAwake.Invoke(gm, null);
+                gm.sugar = 500;
+                gm.queenHp = 20;
+            }
 
-            var pmAwake = typeof(PlacementManager).GetMethod("Awake", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (pmAwake != null) pmAwake.Invoke(pm, null);
-
-            var wmAwake = typeof(WaveManager).GetMethod("Awake", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (wmAwake != null) wmAwake.Invoke(wm, null);
+            if (wm != null)
+            {
+                var wmAwake = typeof(WaveManager).GetMethod("Awake", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (wmAwake != null) wmAwake.Invoke(wm, null);
+            }
 
             if (canvasCtrl != null)
             {
@@ -63,7 +64,7 @@ namespace AntTD.EditorScripts
             }
 
             // Refresh cards UI
-            var cards = Object.FindObjectsByType<AntCardUI>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var cards = Object.FindObjectsByType<AntCardUI>(FindObjectsInactive.Include);
             foreach (var card in cards)
             {
                 var startM = typeof(AntCardUI).GetMethod("Start", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -71,7 +72,58 @@ namespace AntTD.EditorScripts
             }
 
             // -----------------------------------------------------------------
-            // Frame 1: Initial Game State with Automatic 10s Wave Countdown
+            // Frame 0: Lobby Screen State (Lobby Overlay Active)
+            // -----------------------------------------------------------------
+            if (lobbyMgr != null && lobbyMgr.lobbyPanel != null)
+            {
+                lobbyMgr.lobbyPanel.SetActive(true);
+                Canvas.ForceUpdateCanvases();
+                CaptureFrame(cam, "00_lobby_state.png");
+            }
+
+            // -----------------------------------------------------------------
+            // Frame 1: Tech Lab Modal Active
+            // -----------------------------------------------------------------
+            if (lobbyMgr != null && lobbyMgr.techLabModal != null)
+            {
+                lobbyMgr.OpenTechLab();
+                Canvas.ForceUpdateCanvases();
+                CaptureFrame(cam, "08_tech_lab_modal.png");
+                lobbyMgr.CloseTechLab();
+            }
+
+            // -----------------------------------------------------------------
+            // Frame 2: Codex Modal - Towers Tab
+            // -----------------------------------------------------------------
+            var codexUI = Object.FindAnyObjectByType<CodexModalUI>(FindObjectsInactive.Include);
+            if (codexUI != null)
+            {
+                codexUI.OpenCodex();
+                codexUI.SwitchTab("towers");
+                Canvas.ForceUpdateCanvases();
+                CaptureFrame(cam, "09_codex_modal_towers.png");
+
+                // Frame 3: Codex Modal - Enemies Tab
+                codexUI.SwitchTab("enemies");
+                Canvas.ForceUpdateCanvases();
+                CaptureFrame(cam, "10_codex_modal_enemies.png");
+
+                // Frame 4: Codex Modal - Synergies Tab
+                codexUI.SwitchTab("synergies");
+                Canvas.ForceUpdateCanvases();
+                CaptureFrame(cam, "11_codex_modal_synergies.png");
+
+                codexUI.CloseCodex();
+            }
+
+            // Switch to In-Game Battlefield
+            if (lobbyMgr != null && lobbyMgr.lobbyPanel != null)
+            {
+                lobbyMgr.lobbyPanel.SetActive(false);
+            }
+
+            // -----------------------------------------------------------------
+            // Frame 5: Initial In-Game State
             // -----------------------------------------------------------------
             pm.SelectAntToBuild(null);
             wm.wavePrepCountdown = 10f;
@@ -82,7 +134,7 @@ namespace AntTD.EditorScripts
             CaptureFrame(cam, "01_initial_state.png");
 
             // -----------------------------------------------------------------
-            // Frame 2: Select Soldier Ant Card & Place on Slot 2 (Lv.1)
+            // Frame 6: Select Soldier Ant Card & Place on Slot 2 (Lv.1)
             // -----------------------------------------------------------------
             var soldierAnt = pm.allAntTypes.Find(t => t.towerId == "soldier");
             pm.SelectAntToBuild(soldierAnt);
@@ -93,7 +145,7 @@ namespace AntTD.EditorScripts
             CaptureFrame(cam, "02_soldier_placed_lv1.png");
 
             // -----------------------------------------------------------------
-            // Frame 3: Upgrade Soldier to Level 2 (BottomSheet opens)
+            // Frame 7: Upgrade Soldier to Level 2 (BottomSheet opens)
             // -----------------------------------------------------------------
             Tower soldierTower = slot2 != null ? slot2.currentTower : null;
             if (soldierTower != null)
@@ -105,7 +157,7 @@ namespace AntTD.EditorScripts
             CaptureFrame(cam, "03_soldier_upgrade_lv2.png");
 
             // -----------------------------------------------------------------
-            // Frame 4: OPEN EVOLUTION MODAL (Shows Branch A vs Branch B full details!)
+            // Frame 8: OPEN EVOLUTION MODAL
             // -----------------------------------------------------------------
             if (soldierTower != null && canvasCtrl != null)
             {
@@ -115,7 +167,7 @@ namespace AntTD.EditorScripts
             CaptureFrame(cam, "04_evolution_modal_opened.png");
 
             // -----------------------------------------------------------------
-            // Frame 5: EVOLVE to Level 3 Branch B (철갑개미 - Evolved Sprite + Aura!)
+            // Frame 9: EVOLVE to Level 3 Branch B (철갑개미)
             // -----------------------------------------------------------------
             if (canvasCtrl != null) canvasCtrl.CloseEvolutionModal();
             if (soldierTower != null)
@@ -127,7 +179,18 @@ namespace AntTD.EditorScripts
             CaptureFrame(cam, "05_soldier_evolved_lv3.png");
 
             // -----------------------------------------------------------------
-            // Frame 6: Place Fire Ant on Slot 5 & Spawn Enemy Aphid + Shoot Projectile
+            // Frame 10: Toggle Targeting Priority on BottomSheet (First -> Strongest)
+            // -----------------------------------------------------------------
+            if (soldierTower != null)
+            {
+                soldierTower.CycleTargetingPriority();
+                if (canvasCtrl != null) canvasCtrl.OpenBottomSheet(soldierTower);
+            }
+            Canvas.ForceUpdateCanvases();
+            CaptureFrame(cam, "12_bottomsheet_target_priority.png");
+
+            // -----------------------------------------------------------------
+            // Frame 11: Place Fire Ant on Slot 5 & Spawn Enemy Aphid + Shoot Projectile
             // -----------------------------------------------------------------
             if (canvasCtrl != null && canvasCtrl.bottomSheetPanel != null)
             {
@@ -164,7 +227,7 @@ namespace AntTD.EditorScripts
             CaptureFrame(cam, "06_projectile_flying.png");
 
             // -----------------------------------------------------------------
-            // Frame 7: Projectile Hits Enemy (Damage applied, HP bar updated)
+            // Frame 12: Projectile Hits Enemy (Damage applied, HP bar updated)
             // -----------------------------------------------------------------
             if (projObj != null)
             {
@@ -175,13 +238,59 @@ namespace AntTD.EditorScripts
             Canvas.ForceUpdateCanvases();
             CaptureFrame(cam, "07_projectile_impact.png");
 
+            // -----------------------------------------------------------------
+            // Frame 13: Weather Cycle Change (Rain 🌧️)
+            // -----------------------------------------------------------------
+            if (weatherMgr != null)
+            {
+                weatherMgr.SetWeather(WeatherType.Rain);
+                if (canvasCtrl != null && canvasCtrl.weatherText != null)
+                {
+                    canvasCtrl.weatherText.text = "🌧️ 장마";
+                }
+            }
+            Canvas.ForceUpdateCanvases();
+            CaptureFrame(cam, "13_weather_cycle_rain.png");
+
+            // -----------------------------------------------------------------
+            // Frame 14: Stage 2 Split Hollow Loading (Dual Lane)
+            // -----------------------------------------------------------------
+            var stage2Cfg = AssetDatabase.LoadAssetAtPath<StageConfigData>("Assets/Resources/StageConfig_split.asset");
+            if (stageMgr != null && stage2Cfg != null)
+            {
+                stageMgr.LoadStage(stage2Cfg);
+            }
+            Canvas.ForceUpdateCanvases();
+            CaptureFrame(cam, "14_stage2_split_lane.png");
+
+            // -----------------------------------------------------------------
+            // Frame 15: Victory Screen Result Modal
+            // -----------------------------------------------------------------
+            var resultUI = Object.FindAnyObjectByType<GameResultUI>(FindObjectsInactive.Include);
+            if (resultUI != null)
+            {
+                gm.totalKills = 74;
+                gm.queenHp = 20;
+                resultUI.ShowVictory();
+                Canvas.ForceUpdateCanvases();
+                CaptureFrame(cam, "15_victory_screen_result.png");
+
+                // Frame 16: Defeat Screen Result Modal
+                if (resultUI.victoryPanel != null) resultUI.victoryPanel.SetActive(false);
+                resultUI.ShowDefeat();
+                Canvas.ForceUpdateCanvases();
+                CaptureFrame(cam, "16_defeat_screen_result.png");
+
+                if (resultUI.defeatPanel != null) resultUI.defeatPanel.SetActive(false);
+            }
+
             // Cleanup test runtime objects
             if (enemyObj != null) Object.DestroyImmediate(enemyObj);
             if (projObj != null) Object.DestroyImmediate(projObj);
             wm.activeEnemies.Clear();
 
             Debug.Log("=================================================");
-            Debug.Log("✅ ENHANCED PLAYTEST INSPECTION COMPLETED SUCCESSFULLY!");
+            Debug.Log("🎉 ALL 17 FRAMES INSPECTION COMPLETED SUCCESSFULLY!");
             Debug.Log("=================================================");
         }
 
@@ -192,6 +301,8 @@ namespace AntTD.EditorScripts
 
             RenderTexture rt = new RenderTexture(width, height, 24);
             RenderTexture prevRt = cam.targetTexture;
+            Rect prevCamRect = cam.rect;
+            cam.rect = new Rect(0, 0, 1, 1);
             cam.targetTexture = rt;
             cam.Render();
 
@@ -201,6 +312,7 @@ namespace AntTD.EditorScripts
             tex.Apply();
 
             cam.targetTexture = prevRt;
+            cam.rect = prevCamRect;
             RenderTexture.active = null;
             Object.DestroyImmediate(rt);
 

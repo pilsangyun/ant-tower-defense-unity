@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7696de18ed404419b891de3f3fc40c58, type: 3}
+  m_Name: StageConfig_split
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.StageConfigData
+  stageId: split
+  stageName: "\uAC08\uB77C\uC9C4 \uACE0\uBAA9"
+  engName: Split Hollow
+  badge: "\uC804\uB7B5 \uB4C0\uC5BC \uB808\uC778"
+  rating: "\u2605\u2605\u2606"
+  description: "\uC0C1\uB2E8 \uC88C\xB7\uC6B0 2\uAC08\uB798 \uACBD\uB85C\uAC00 \uC911\uC559\uC5D0\uC11C \uD569\uB958\uD558\uB294 \uC804\uB7B5 \uC804\uC7A5. \uC591\uBA74 \uBC29\uC5B4 \uD544\uC694."
+  backgroundSprite: {fileID: 21300000, guid: db2d8ceab8417834b8207a753ffbe17f, type: 3}
+  queenCanvasPos: {x: 270, y: 775}
+  slots:
+  - id: 1
+    canvasX: 40
+    canvasY: 80
+    label: Slot_1
+    rangeBonus: 0
+  - id: 2
+    canvasX: 500
+    canvasY: 80
+    label: Slot_2
+    rangeBonus: 0
+  - id: 3
+    canvasX: 100
+    canvasY: 230
+    label: Slot_3
+    rangeBonus: 0
+  - id: 4
+    canvasX: 440
+    canvasY: 230
+    label: Slot_4
+    rangeBonus: 0
+  - id: 5
+    canvasX: 270
+    canvasY: 150
+    label: Slot_5
+    rangeBonus: 0
+  - id: 6
+    canvasX: 270
+    canvasY: 300
+    label: Slot_6
+    rangeBonus: 0
+  - id: 7
+    canvasX: 50
+    canvasY: 380
+    label: Slot_7
+    rangeBonus: 0
+  - id: 8
+    canvasX: 490
+    canvasY: 380
+    label: Slot_8
+    rangeBonus: 0
+  - id: 9
+    canvasX: 190
+    canvasY: 450
+    label: Slot_9
+    rangeBonus: 0
+  - id: 10
+    canvasX: 350
+    canvasY: 450
+    label: Slot_10
+    rangeBonus: 0
+  - id: 11
+    canvasX: 180
+    canvasY: 560
+    label: Slot_11
+    rangeBonus: 0
+  - id: 12
+    canvasX: 360
+    canvasY: 560
+    label: Slot_12
+    rangeBonus: 0
+  - id: 13
+    canvasX: 180
+    canvasY: 670
+    label: Slot_13
+    rangeBonus: 0
+  - id: 14
+    canvasX: 360
+    canvasY: 670
+    label: Slot_14
+    rangeBonus: 0
+  - id: 15
+    canvasX: 270
+    canvasY: 380
+    label: Slot_15
+    rangeBonus: 0
+  sugars: []
+  waypoints: []
+  laneA:
+  - {x: 95, y: -30}
+  - {x: 95, y: 150}
+  - {x: 180, y: 260}
+  - {x: 120, y: 380}
+  - {x: 270, y: 490}
+  laneB:
+  - {x: 445, y: -30}
+  - {x: 445, y: 150}
+  - {x: 360, y: 260}
+  - {x: 420, y: 380}
+  - {x: 270, y: 490}
+  laneFinal:
+  - {x: 270, y: 490}
+  - {x: 270, y: 620}
+  - {x: 270, y: 775}
+  hasSinkhole: 0
+  sinkholeCanvasPos: {x: 270, y: 410}
+  sinkholeRadius: 75
+  sinkholeSlowRate: 0.4

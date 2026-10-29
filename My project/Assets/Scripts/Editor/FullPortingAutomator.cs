@@ -148,6 +148,20 @@ namespace AntTD.EditorScripts
             WaveManager wm = wmObj.GetComponent<WaveManager>();
             if (wm == null) wm = wmObj.AddComponent<WaveManager>();
 
+            // WeatherManager
+            WeatherManager weatherMgr = gmObj.GetComponent<WeatherManager>();
+            if (weatherMgr == null) weatherMgr = gmObj.AddComponent<WeatherManager>();
+
+            // TechLabManager
+            TechLabManager techLabMgr = gmObj.GetComponent<TechLabManager>();
+            if (techLabMgr == null) techLabMgr = gmObj.AddComponent<TechLabManager>();
+
+            // StageManager
+            StageManager stageMgr = gmObj.GetComponent<StageManager>();
+            if (stageMgr == null) stageMgr = gmObj.AddComponent<StageManager>();
+            stageMgr.backgroundRenderer = bgRenderer;
+            stageMgr.ringSprite = ringSprite;
+
             // Global Input Raycaster
             if (gmObj.GetComponent<GlobalInputRaycaster>() == null)
             {
@@ -264,10 +278,32 @@ namespace AntTD.EditorScripts
             pm.allAntTypes = antList;
             pm.SelectAntToBuild(fireData); // Pre-select Fire Ant
 
-            // 13. Build Pixel-Perfect UI
-            PixelPerfectUICreator.BuildCompletePixelPerfectUI(antList);
+            // Create Stage Configs & Difficulty Configs
+            List<StageConfigData> stageConfigs = CreateStageConfigs(bgSprite);
+            stageMgr.stageConfigs = stageConfigs;
+            stageMgr.slotsContainer = slotsContainer.transform;
 
-            // 14. Save Scene and Assets
+            List<DifficultyData> diffConfigs = CreateDifficultyConfigs();
+
+            // 13. Build Pixel-Perfect In-Game UI & Result UI
+            InGameCanvasController inGameUI = PixelPerfectUICreator.BuildCompletePixelPerfectUI(antList);
+
+            if (weatherMgr != null && inGameUI != null)
+            {
+                weatherMgr.hudWeatherText = inGameUI.weatherText;
+            }
+
+            // 14. Build Lobby UI Overlay (Full HTML Match)
+            Transform shellTransform = inGameUI.transform.Find("AppShellContent");
+            if (shellTransform != null)
+            {
+                LobbyManager lobbyMgr = LobbyUICreator.BuildLobbyUI(inGameUI.gameObject, shellTransform);
+                lobbyMgr.battleCanvas = inGameUI.gameObject;
+                lobbyMgr.stageConfigs = stageConfigs;
+                lobbyMgr.difficultyConfigs = diffConfigs;
+            }
+
+            // 15. Save Scene and Assets
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, "Assets/Scenes/SampleScene.unity");
             AssetDatabase.SaveAssets();
@@ -534,6 +570,136 @@ namespace AntTD.EditorScripts
                 w.spawns.Add(new SpawnGroup { enemyData = sp.data, count = sp.count, interval = sp.interval, delay = sp.delay });
             }
             return w;
+        }
+
+        private static List<DifficultyData> CreateDifficultyConfigs()
+        {
+            List<DifficultyData> list = new List<DifficultyData>();
+            DifficultyType[] types = { DifficultyType.Easy, DifficultyType.Normal, DifficultyType.Hard, DifficultyType.Nightmare, DifficultyType.Infinite };
+            foreach (var dt in types)
+            {
+                string path = $"Assets/Resources/Difficulty_{dt}.asset";
+                DifficultyData d = AssetDatabase.LoadAssetAtPath<DifficultyData>(path);
+                if (d == null)
+                {
+                    d = DifficultyData.CreateDefault(dt);
+                    AssetDatabase.CreateAsset(d, path);
+                }
+                list.Add(d);
+            }
+            return list;
+        }
+
+        private static List<StageConfigData> CreateStageConfigs(Sprite bgSprite)
+        {
+            List<StageConfigData> list = new List<StageConfigData>();
+
+            // 1. Stage 1: 햇살 정원
+            string p1 = "Assets/Resources/StageConfig_sunny.asset";
+            StageConfigData s1 = AssetDatabase.LoadAssetAtPath<StageConfigData>(p1);
+            if (s1 == null) { s1 = ScriptableObject.CreateInstance<StageConfigData>(); AssetDatabase.CreateAsset(s1, p1); }
+            s1.stageId = "sunny";
+            s1.stageName = "햇살 정원";
+            s1.engName = "Sunny Garden";
+            s1.badge = "입문용";
+            s1.rating = "★☆☆";
+            s1.description = "5단 직각 S자 황토 벽돌 길과 울창한 숲속 정원.";
+            s1.backgroundSprite = bgSprite;
+            s1.queenCanvasPos = new Vector2(268, 742);
+
+            s1.waypoints = new List<Vector2>
+            {
+                new Vector2(45, 72), new Vector2(110, 92), new Vector2(418, 92),
+                new Vector2(418, 234), new Vector2(118, 234), new Vector2(118, 404),
+                new Vector2(418, 404), new Vector2(418, 562), new Vector2(118, 562),
+                new Vector2(118, 660), new Vector2(268, 660), new Vector2(268, 742)
+            };
+
+            Vector2[] s1Slots = new Vector2[]
+            {
+                new Vector2(486, 86), new Vector2(268, 164), new Vector2(45, 248),
+                new Vector2(492, 260), new Vector2(268, 314), new Vector2(45, 398),
+                new Vector2(492, 402), new Vector2(268, 462), new Vector2(45, 552),
+                new Vector2(268, 598), new Vector2(492, 668)
+            };
+            s1.slots.Clear();
+            for (int i = 0; i < s1Slots.Length; i++)
+            {
+                s1.slots.Add(new SlotCoordinate { id = i + 1, canvasX = s1Slots[i].x, canvasY = s1Slots[i].y, label = $"Slot_{i+1}" });
+            }
+            EditorUtility.SetDirty(s1);
+            list.Add(s1);
+
+            // 2. Stage 2: 갈라진 고목 (듀얼 레인)
+            string p2 = "Assets/Resources/StageConfig_split.asset";
+            StageConfigData s2 = AssetDatabase.LoadAssetAtPath<StageConfigData>(p2);
+            if (s2 == null) { s2 = ScriptableObject.CreateInstance<StageConfigData>(); AssetDatabase.CreateAsset(s2, p2); }
+            s2.stageId = "split";
+            s2.stageName = "갈라진 고목";
+            s2.engName = "Split Hollow";
+            s2.badge = "전략 듀얼 레인";
+            s2.rating = "★★☆";
+            s2.description = "상단 좌·우 2갈래 경로가 중앙에서 합류하는 전략 전장. 양면 방어 필요.";
+            s2.backgroundSprite = bgSprite;
+            s2.queenCanvasPos = new Vector2(270, 775);
+
+            s2.laneA = new List<Vector2> { new Vector2(95, -30), new Vector2(95, 150), new Vector2(180, 260), new Vector2(120, 380), new Vector2(270, 490) };
+            s2.laneB = new List<Vector2> { new Vector2(445, -30), new Vector2(445, 150), new Vector2(360, 260), new Vector2(420, 380), new Vector2(270, 490) };
+            s2.laneFinal = new List<Vector2> { new Vector2(270, 490), new Vector2(270, 620), new Vector2(270, 775) };
+
+            Vector2[] s2Slots = new Vector2[]
+            {
+                new Vector2(40, 80), new Vector2(500, 80), new Vector2(100, 230), new Vector2(440, 230),
+                new Vector2(270, 150), new Vector2(270, 300), new Vector2(50, 380), new Vector2(490, 380),
+                new Vector2(190, 450), new Vector2(350, 450), new Vector2(180, 560), new Vector2(360, 560),
+                new Vector2(180, 670), new Vector2(360, 670), new Vector2(270, 380)
+            };
+            s2.slots.Clear();
+            for (int i = 0; i < s2Slots.Length; i++)
+            {
+                s2.slots.Add(new SlotCoordinate { id = i + 1, canvasX = s2Slots[i].x, canvasY = s2Slots[i].y, label = $"Slot_{i+1}" });
+            }
+            EditorUtility.SetDirty(s2);
+            list.Add(s2);
+
+            // 3. Stage 3: 개미지옥 협곡 (소용돌이 함정)
+            string p3 = "Assets/Resources/StageConfig_canyon.asset";
+            StageConfigData s3 = AssetDatabase.LoadAssetAtPath<StageConfigData>(p3);
+            if (s3 == null) { s3 = ScriptableObject.CreateInstance<StageConfigData>(); AssetDatabase.CreateAsset(s3, p3); }
+            s3.stageId = "canyon";
+            s3.stageName = "개미지옥 협곡";
+            s3.engName = "Antlion Canyon";
+            s3.badge = "소용돌이 함정 기믹";
+            s3.rating = "★★★";
+            s3.description = "급격한 지그재그 협곡 및 중앙 모래소용돌이 함정 기믹이 도사리는 고난도 전장.";
+            s3.backgroundSprite = bgSprite;
+            s3.queenCanvasPos = new Vector2(270, 775);
+            s3.hasSinkhole = true;
+            s3.sinkholeCanvasPos = new Vector2(270, 410);
+
+            s3.waypoints = new List<Vector2>
+            {
+                new Vector2(270, -30), new Vector2(270, 80), new Vector2(110, 80), new Vector2(110, 260),
+                new Vector2(430, 260), new Vector2(430, 410), new Vector2(110, 410), new Vector2(110, 580),
+                new Vector2(430, 580), new Vector2(430, 700), new Vector2(270, 700), new Vector2(270, 775)
+            };
+
+            Vector2[] s3Slots = new Vector2[]
+            {
+                new Vector2(180, 40), new Vector2(360, 40), new Vector2(50, 170), new Vector2(200, 170),
+                new Vector2(490, 170), new Vector2(340, 200), new Vector2(200, 335), new Vector2(340, 485),
+                new Vector2(490, 335), new Vector2(50, 495), new Vector2(200, 500), new Vector2(270, 640),
+                new Vector2(490, 640), new Vector2(360, 760), new Vector2(180, 760), new Vector2(90, 670)
+            };
+            s3.slots.Clear();
+            for (int i = 0; i < s3Slots.Length; i++)
+            {
+                s3.slots.Add(new SlotCoordinate { id = i + 1, canvasX = s3Slots[i].x, canvasY = s3Slots[i].y, label = $"Slot_{i+1}" });
+            }
+            EditorUtility.SetDirty(s3);
+            list.Add(s3);
+
+            return list;
         }
 
         private static void ConfigureSprite(string path, float ppu)

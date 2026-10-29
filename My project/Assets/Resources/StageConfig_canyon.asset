@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7696de18ed404419b891de3f3fc40c58, type: 3}
+  m_Name: StageConfig_canyon
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.StageConfigData
+  stageId: canyon
+  stageName: "\uAC1C\uBBF8\uC9C0\uC625 \uD611\uACE1"
+  engName: Antlion Canyon
+  badge: "\uC18C\uC6A9\uB3CC\uC774 \uD568\uC815 \uAE30\uBBF9"
+  rating: "\u2605\u2605\u2605"
+  description: "\uAE09\uACA9\uD55C \uC9C0\uADF8\uC7AC\uADF8 \uD611\uACE1 \uBC0F \uC911\uC559 \uBAA8\uB798\uC18C\uC6A9\uB3CC\uC774 \uD568\uC815 \uAE30\uBBF9\uC774 \uB3C4\uC0AC\uB9AC\uB294 \uACE0\uB09C\uB3C4 \uC804\uC7A5."
+  backgroundSprite: {fileID: 21300000, guid: db2d8ceab8417834b8207a753ffbe17f, type: 3}
+  queenCanvasPos: {x: 270, y: 775}
+  slots:
+  - id: 1
+    canvasX: 180
+    canvasY: 40
+    label: Slot_1
+    rangeBonus: 0
+  - id: 2
+    canvasX: 360
+    canvasY: 40
+    label: Slot_2
+    rangeBonus: 0
+  - id: 3
+    canvasX: 50
+    canvasY: 170
+    label: Slot_3
+    rangeBonus: 0
+  - id: 4
+    canvasX: 200
+    canvasY: 170
+    label: Slot_4
+    rangeBonus: 0
+  - id: 5
+    canvasX: 490
+    canvasY: 170
+    label: Slot_5
+    rangeBonus: 0
+  - id: 6
+    canvasX: 340
+    canvasY: 200
+    label: Slot_6
+    rangeBonus: 0
+  - id: 7
+    canvasX: 200
+    canvasY: 335
+    label: Slot_7
+    rangeBonus: 0
+  - id: 8
+    canvasX: 340
+    canvasY: 485
+    label: Slot_8
+    rangeBonus: 0
+  - id: 9
+    canvasX: 490
+    canvasY: 335
+    label: Slot_9
+    rangeBonus: 0
+  - id: 10
+    canvasX: 50
+    canvasY: 495
+    label: Slot_10
+    rangeBonus: 0
+  - id: 11
+    canvasX: 200
+    canvasY: 500
+    label: Slot_11
+    rangeBonus: 0
+  - id: 12
+    canvasX: 270
+    canvasY: 640
+    label: Slot_12
+    rangeBonus: 0
+  - id: 13
+    canvasX: 490
+    canvasY: 640
+    label: Slot_13
+    rangeBonus: 0
+  - id: 14
+    canvasX: 360
+    canvasY: 760
+    label: Slot_14
+    rangeBonus: 0
+  - id: 15
+    canvasX: 180
+    canvasY: 760
+    label: Slot_15
+    rangeBonus: 0
+  - id: 16
+    canvasX: 90
+    canvasY: 670
+    label: Slot_16
+    rangeBonus: 0
+  sugars: []
+  waypoints:
+  - {x: 270, y: -30}
+  - {x: 270, y: 80}
+  - {x: 110, y: 80}
+  - {x: 110, y: 260}
+  - {x: 430, y: 260}
+  - {x: 430, y: 410}
+  - {x: 110, y: 410}
+  - {x: 110, y: 580}
+  - {x: 430, y: 580}
+  - {x: 430, y: 700}
+  - {x: 270, y: 700}
+  - {x: 270, y: 775}
+  laneA: []
+  laneB: []
+  laneFinal: []
+  hasSinkhole: 1
+  sinkholeCanvasPos: {x: 270, y: 410}
+  sinkholeRadius: 75
+  sinkholeSlowRate: 0.4

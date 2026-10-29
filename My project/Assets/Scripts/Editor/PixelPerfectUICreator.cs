@@ -205,6 +205,11 @@ namespace AntTD.EditorScripts
             ctrl.acidRainBtn = CreateCircularSkillButton(skillDockObj.transform, "Skill_W", skillCircleSp, iconAcidSp, "W", new Vector2(0, 58), font);
             ctrl.honeyTrapBtn = CreateCircularSkillButton(skillDockObj.transform, "Skill_E", skillCircleSp, iconHoneySp, "E", new Vector2(0, 2), font);
 
+            QueenSkillManager qsm = canvasObj.AddComponent<QueenSkillManager>();
+            qsm.swarmCallBtn = ctrl.swarmCallBtn;
+            qsm.acidRainBtn = ctrl.acidRainBtn;
+            qsm.honeyTrapBtn = ctrl.honeyTrapBtn;
+
             // -------------------------------------------------------------------------
             // 5. BOTTOM SHEET INSPECTOR (Modal Popup on Tower Click)
             // -------------------------------------------------------------------------
@@ -225,12 +230,18 @@ namespace AntTD.EditorScripts
             // Stats row
             ctrl.sheetStatsText = CreateText(sheetObj.transform, "Stats", "공격력: 28  |  공속: 2.5  |  사거리: 2.2", font, 11, FontStyle.Normal, new Color(0.85f, 0.9f, 0.95f), new Vector2(0, 1), new Vector2(1, 1), new Vector2(16, -40), new Vector2(-24, 18), TextAnchor.MiddleLeft);
 
-            // Action Buttons
-            ctrl.sheetUpgradeBtn = CreateSlicedButton(sheetObj.transform, "UpgradeBtn", btnPrimarySp, "2단계 강화 (🍬120)", font, 11, FontStyle.Bold, Color.white, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 48), new Vector2(240, 32));
+            // Action Buttons (Priority, Upgrade, Sell Row)
+            ctrl.sheetPriorityBtn = CreateSlicedButton(sheetObj.transform, "PriorityBtn", btnSecondarySp, "🎯 선두 우선", font, 10, FontStyle.Bold, new Color(0.98f, 0.75f, 0.14f), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(-155, 36), new Vector2(100, 32));
+            ctrl.sheetPriorityBtnText = ctrl.sheetPriorityBtn.GetComponentInChildren<Text>();
+
+            ctrl.sheetUpgradeBtn = CreateSlicedButton(sheetObj.transform, "UpgradeBtn", btnPrimarySp, "2단계 강화 (🍬120)", font, 11, FontStyle.Bold, Color.white, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(-10, 36), new Vector2(165, 32));
             ctrl.sheetUpgradeBtnText = ctrl.sheetUpgradeBtn.GetComponentInChildren<Text>();
 
-            ctrl.sheetOverclockBtn = CreateSlicedButton(sheetObj.transform, "OverclockBtn", btnPrimarySp, "한계돌파 +1 (🍬150/🥩1)", font, 11, FontStyle.Bold, Color.white, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 48), new Vector2(240, 32));
+            ctrl.sheetOverclockBtn = CreateSlicedButton(sheetObj.transform, "OverclockBtn", btnPrimarySp, "한계돌파 +1 (🍬150/🥩1)", font, 11, FontStyle.Bold, Color.white, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(-10, 36), new Vector2(165, 32));
             ctrl.sheetOverclockBtnText = ctrl.sheetOverclockBtn.GetComponentInChildren<Text>();
+
+            ctrl.sheetSellBtn = CreateSlicedButton(sheetObj.transform, "SellBtn", btnSecondarySp, "철거 (🍬70)", font, 10, FontStyle.Bold, new Color(0.95f, 0.4f, 0.4f), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(145, 36), new Vector2(95, 32));
+            ctrl.sheetSellBtnText = ctrl.sheetSellBtn.GetComponentInChildren<Text>();
 
             sheetObj.SetActive(false);
 
@@ -310,6 +321,39 @@ namespace AntTD.EditorScripts
 
             modalObj.SetActive(false);
 
+            // -------------------------------------------------------------------------
+            // 7. GAME RESULT OVERLAYS (Victory & Defeat)
+            // -------------------------------------------------------------------------
+            GameResultUI resultUI = canvasObj.AddComponent<GameResultUI>();
+
+            // Victory Panel
+            GameObject vicObj = CreateUIObject("VictoryScreen", shellObj.transform);
+            RectTransform vr = vicObj.GetComponent<RectTransform>();
+            SetAnchors(vr, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
+            Image vicBg = vicObj.AddComponent<Image>();
+            vicBg.color = new Color(0.04f, 0.14f, 0.06f, 0.95f);
+            resultUI.victoryPanel = vicObj;
+
+            resultUI.victoryTitleText = CreateText(vicObj.transform, "Title", "🎉 작전 성공 (VICTORY)", font, 18, FontStyle.Bold, new Color(0.98f, 0.75f, 0.14f), new Vector2(0.5f, 0.7f), new Vector2(0.5f, 0.7f), Vector2.zero, new Vector2(400, 36), TextAnchor.MiddleCenter);
+            resultUI.victoryStatsText = CreateText(vicObj.transform, "Stats", "전 15 웨이브 완전 방어 성공!", font, 12, FontStyle.Normal, Color.white, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(360, 120), TextAnchor.MiddleCenter);
+            resultUI.victoryLobbyBtn = CreateSlicedButton(vicObj.transform, "LobbyBtn", btnSecondarySp, "로비로 돌아가기", font, 12, FontStyle.Bold, Color.white, new Vector2(0.5f, 0.28f), new Vector2(0.5f, 0.28f), new Vector2(-75, 0), new Vector2(130, 34));
+            resultUI.victoryRestartBtn = CreateSlicedButton(vicObj.transform, "RestartBtn", btnPrimarySp, "다시 출진", font, 12, FontStyle.Bold, Color.white, new Vector2(0.5f, 0.28f), new Vector2(0.5f, 0.28f), new Vector2(75, 0), new Vector2(130, 34));
+            vicObj.SetActive(false);
+
+            // Defeat Panel
+            GameObject defObj = CreateUIObject("DefeatScreen", shellObj.transform);
+            RectTransform dr = defObj.GetComponent<RectTransform>();
+            SetAnchors(dr, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
+            Image defBg = defObj.AddComponent<Image>();
+            defBg.color = new Color(0.14f, 0.04f, 0.04f, 0.95f);
+            resultUI.defeatPanel = defObj;
+
+            resultUI.defeatTitleText = CreateText(defObj.transform, "Title", "💀 방어선 함락 (DEFEAT)", font, 18, FontStyle.Bold, new Color(0.95f, 0.25f, 0.25f), new Vector2(0.5f, 0.7f), new Vector2(0.5f, 0.7f), Vector2.zero, new Vector2(400, 36), TextAnchor.MiddleCenter);
+            resultUI.defeatStatsText = CreateText(defObj.transform, "Stats", "여왕개미가 쓰러졌습니다.", font, 12, FontStyle.Normal, Color.white, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(360, 120), TextAnchor.MiddleCenter);
+            resultUI.defeatLobbyBtn = CreateSlicedButton(defObj.transform, "LobbyBtn", btnSecondarySp, "로비로 돌아가기", font, 12, FontStyle.Bold, Color.white, new Vector2(0.5f, 0.28f), new Vector2(0.5f, 0.28f), new Vector2(-75, 0), new Vector2(130, 34));
+            resultUI.defeatRestartBtn = CreateSlicedButton(defObj.transform, "RestartBtn", btnPrimarySp, "재도전", font, 12, FontStyle.Bold, Color.white, new Vector2(0.5f, 0.28f), new Vector2(0.5f, 0.28f), new Vector2(75, 0), new Vector2(130, 34));
+            defObj.SetActive(false);
+
             return ctrl;
         }
 
@@ -343,6 +387,7 @@ namespace AntTD.EditorScripts
             Image img = obj.AddComponent<Image>();
             img.sprite = sp;
             img.type = Image.Type.Sliced;
+            img.raycastTarget = false;
             return obj;
         }
 

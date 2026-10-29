@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using AntTD.Data;
+using AntTD.Managers;
 
 namespace AntTD.Entities
 {
@@ -86,12 +87,18 @@ namespace AntTD.Entities
             hpBarFill.transform.localScale = Vector3.one;
         }
 
+        private static Sprite _cachedPixelSprite;
+
         private Sprite CreatePixelSprite()
         {
-            Texture2D tex = new Texture2D(1, 1);
-            tex.SetPixel(0, 0, Color.white);
-            tex.Apply();
-            return Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+            if (_cachedPixelSprite == null)
+            {
+                Texture2D tex = new Texture2D(1, 1);
+                tex.SetPixel(0, 0, Color.white);
+                tex.Apply();
+                _cachedPixelSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+            }
+            return _cachedPixelSprite;
         }
 
         private void Update()
@@ -135,7 +142,8 @@ namespace AntTD.Entities
                 }
             }
 
-            float step = currentSpeed * slowRatio * Time.deltaTime;
+            float weatherSpeedMul = (WeatherManager.Instance != null) ? WeatherManager.Instance.GetEnemySpeedModifier() : 1.0f;
+            float step = currentSpeed * slowRatio * weatherSpeedMul * Time.deltaTime;
             transform.position = Vector2.MoveTowards(currentPos, target, step);
 
             if (Vector2.Distance(transform.position, target) < 0.05f)
@@ -154,6 +162,11 @@ namespace AntTD.Entities
             float ratio = Mathf.Clamp01(currentHp / maxHp);
             hpBarFill.transform.localScale = new Vector3(ratio, 1f, 1f);
             hpBarFill.transform.localPosition = new Vector3((ratio - 1f) * 0.5f, 0, 0);
+        }
+
+        public void TakeDamage(float amount, bool isAcid = false)
+        {
+            TakeDamage(amount, isAcid ? "acid" : "physical", false);
         }
 
         public void TakeDamage(float amount, string damageType, bool isCrit)

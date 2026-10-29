@@ -76,6 +76,7 @@ namespace AntTD.Entities
 
             GameObject obj = Instantiate(towerPrefab, transform.position, Quaternion.identity, transform);
             currentTower = obj.GetComponent<Tower>();
+            currentTower.currentSlot = this;
             currentTower.Initialize(data);
 
             if (ringHighlightRenderer != null) ringHighlightRenderer.enabled = false;

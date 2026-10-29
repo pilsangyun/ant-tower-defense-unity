@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7696de18ed404419b891de3f3fc40c58, type: 3}
+  m_Name: StageConfig_sunny
+  m_EditorClassIdentifier: Assembly-CSharp::AntTD.Data.StageConfigData
+  stageId: sunny
+  stageName: "\uD587\uC0B4 \uC815\uC6D0"
+  engName: Sunny Garden
+  badge: "\uC785\uBB38\uC6A9"
+  rating: "\u2605\u2606\u2606"
+  description: "5\uB2E8 \uC9C1\uAC01 S\uC790 \uD669\uD1A0 \uBCBD\uB3CC \uAE38\uACFC \uC6B8\uCC3D\uD55C \uC232\uC18D \uC815\uC6D0."
+  backgroundSprite: {fileID: 21300000, guid: db2d8ceab8417834b8207a753ffbe17f, type: 3}
+  queenCanvasPos: {x: 268, y: 742}
+  slots:
+  - id: 1
+    canvasX: 486
+    canvasY: 86
+    label: Slot_1
+    rangeBonus: 0
+  - id: 2
+    canvasX: 268
+    canvasY: 164
+    label: Slot_2
+    rangeBonus: 0
+  - id: 3
+    canvasX: 45
+    canvasY: 248
+    label: Slot_3
+    rangeBonus: 0
+  - id: 4
+    canvasX: 492
+    canvasY: 260
+    label: Slot_4
+    rangeBonus: 0
+  - id: 5
+    canvasX: 268
+    canvasY: 314
+    label: Slot_5
+    rangeBonus: 0
+  - id: 6
+    canvasX: 45
+    canvasY: 398
+    label: Slot_6
+    rangeBonus: 0
+  - id: 7
+    canvasX: 492
+    canvasY: 402
+    label: Slot_7
+    rangeBonus: 0
+  - id: 8
+    canvasX: 268
+    canvasY: 462
+    label: Slot_8
+    rangeBonus: 0
+  - id: 9
+    canvasX: 45
+    canvasY: 552
+    label: Slot_9
+    rangeBonus: 0
+  - id: 10
+    canvasX: 268
+    canvasY: 598
+    label: Slot_10
+    rangeBonus: 0
+  - id: 11
+    canvasX: 492
+    canvasY: 668
+    label: Slot_11
+    rangeBonus: 0
+  sugars: []
+  waypoints:
+  - {x: 45, y: 72}
+  - {x: 110, y: 92}
+  - {x: 418, y: 92}
+  - {x: 418, y: 234}
+  - {x: 118, y: 234}
+  - {x: 118, y: 404}
+  - {x: 418, y: 404}
+  - {x: 418, y: 562}
+  - {x: 118, y: 562}
+  - {x: 118, y: 660}
+  - {x: 268, y: 660}
+  - {x: 268, y: 742}
+  laneA: []
+  laneB: []
+  laneFinal: []
+  hasSinkhole: 0
+  sinkholeCanvasPos: {x: 270, y: 410}
+  sinkholeRadius: 75
+  sinkholeSlowRate: 0.4

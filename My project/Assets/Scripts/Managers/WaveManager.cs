@@ -116,8 +116,19 @@ namespace AntTD.Managers
             GameObject obj = Instantiate(targetPrefab);
             Enemy enemy = obj.GetComponent<Enemy>();
 
+            var diff = GameManager.Instance != null ? GameManager.Instance.currentDifficulty : null;
+            float diffHpMul = diff != null ? diff.hpMultiplier : 1.0f;
+            float diffSpdMul = diff != null ? diff.speedMultiplier : 1.0f;
+
             float hpMul = 1.0f + (currentWaveIndex * 0.12f);
-            enemy.Initialize(data, hpMul, 1.0f, GameManager.Instance.waypoints);
+            if (diff != null && diff.diffType == DifficultyType.Infinite)
+            {
+                hpMul = Mathf.Pow(1.25f, currentWaveIndex);
+            }
+            float finalHpMul = hpMul * diffHpMul;
+
+            var spawnPath = (StageManager.Instance != null) ? StageManager.Instance.GetSpawnPathForNextEnemy() : GameManager.Instance.waypoints;
+            enemy.Initialize(data, finalHpMul, diffSpdMul, spawnPath);
 
             enemy.OnEnemyDied += HandleEnemyDied;
             enemy.OnEnemyReachedQueen += HandleEnemyReachedQueen;
@@ -141,7 +152,8 @@ namespace AntTD.Managers
         {
             isWaveRunning = false;
             currentWaveIndex++;
-            wavePrepCountdown = 10.0f;
+            var diff = GameManager.Instance != null ? GameManager.Instance.currentDifficulty : null;
+            wavePrepCountdown = diff != null ? diff.waveCountdownSeconds : 10.0f;
 
             if (GameManager.Instance != null)
             {
@@ -151,10 +163,14 @@ namespace AntTD.Managers
                 if (proteinBonus > 0) GameManager.Instance.AddProtein(proteinBonus);
             }
 
-            var stage = GameManager.Instance.currentStageData;
+            var stage = GameManager.Instance != null ? GameManager.Instance.currentStageData : null;
             if (stage != null && currentWaveIndex >= stage.waves.Count)
             {
                 Debug.Log("🎉 [AntTD] ALL 15 WAVES CLEARED! VICTORY!");
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.TriggerVictory();
+                }
             }
         }
     }
